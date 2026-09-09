@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: sos
+    database: supply_chain_db
+    schema: supply_chain_schema
+    tables:
+      - name: calendar
+      - name: inventory
+      - name: logistics
+      - name: production
+      - name: suppliers
+      - name: purchase_orders
+      - name: sales_forecast
+

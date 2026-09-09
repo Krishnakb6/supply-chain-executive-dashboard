@@ -1,0 +1,1 @@
+select * from {{ ref('silver_calendar') }} where date is not null

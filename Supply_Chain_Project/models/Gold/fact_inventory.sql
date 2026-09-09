@@ -1,0 +1,1 @@
+select sku,warehouse_id,supplier_id,current_stock,reorder_level,inventory_status from {{ ref('silver_inventory') }}   

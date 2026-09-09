@@ -1,0 +1,1 @@
+select distinct sku from {{ ref('silver_inventory') }} 

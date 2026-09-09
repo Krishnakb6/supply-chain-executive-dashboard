@@ -1,0 +1,1 @@
+select * from {{ source('sos', 'purchase_orders') }}

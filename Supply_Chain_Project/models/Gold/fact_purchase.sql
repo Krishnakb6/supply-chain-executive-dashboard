@@ -1,0 +1,2 @@
+select s.supplier_name,s.location,s.rating,po.quantity,po.lead_time_days,po.delivery_delay_days, po.sku,po.order_date,po.supplier_id
+from {{ ref('silver_purchase_orders') }} po left join {{ ref('silver_supplier') }} s on po.supplier_id=s.supplier_id

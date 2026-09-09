@@ -1,0 +1,1 @@
+select distinct warehouse_id from {{ ref('silver_inventory') }}

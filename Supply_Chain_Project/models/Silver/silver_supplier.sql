@@ -1,0 +1,1 @@
+select supplier_id,supplier_name,location,rating from {{ ref('brz_suppliers') }}
