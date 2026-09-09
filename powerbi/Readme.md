@@ -12,11 +12,11 @@ contains joined, business-ready tables used for Power BI reporting.
 📊 Dashboard Preview
 
 Executive Overview
-![Alt text](powerbi/Screenshots/Executive_Overview.png)
+![Executive_Overview](powerbi/Screenshots/Executive_Overview.png)
 
 
 Filtered Supplier View
-![Alt text](powerbi/Screenshots/Filtered_Supplier_view.png)
+![Filtered_Supplier_view](powerbi/Screenshots/Filtered_Supplier_view.png)
 
 
 🎯 Project Objective
