@@ -2,6 +2,12 @@
 .venv/
 __pycache__/
 *.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # dbt
 target/
@@ -20,3 +26,10 @@ Thumbs.db
 
 # Databricks
 profiles.yml
+
+
+**/.ipynb_checkpoints/
+app/.streamlit/secrets.toml
+
+# Local generated checks and notebook exports
+*_check.ipynb

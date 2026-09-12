@@ -1,451 +1,316 @@
-Supply Chain Executive Dashboard
+# Power BI - Supply Chain Analytics Dashboard
 
-An interactive Power BI Supply Chain Analytics Dashboard designed to
-provide an executive-level view of supplier performance, purchasing
-activity, logistics costs, production downtime, and demand trends.
+This folder documents the Power BI component of the Supply Chain & Manufacturing Analytics Platform.
 
-The project follows a Bronze → Silver → Gold data-layer
-architecture: the Bronze layer contains the raw source CSVs, the Silver
-layer contains cleaned and processed datasets, and the Gold layer
-contains joined, business-ready tables used for Power BI reporting.
+Power BI provides the business-facing visualization layer for supplier performance, inventory, production, logistics, purchase orders, and forecasting.
 
-📊 Dashboard Preview
+## Dashboard Purpose
 
-Executive Overview
-![Executive_Overview](powerbi/Screenshots/Executive_Overview.png)
+The dashboard provides a consolidated view of supply chain operations and supports questions such as:
 
+- How are suppliers performing?
+- Where are delivery delays occurring?
+- What is the current inventory position?
+- How is production performing?
+- What logistics issues are occurring?
+- How does demand compare with forecasts?
+- Which areas require management attention?
 
-Filtered Supplier View
-![Filtered_Supplier_view](powerbi/Screenshots/Filtered_Supplier_view.png)
+## Data Architecture
 
+Power BI consumes the business-ready Gold layer produced through Databricks and dbt.
 
-🎯 Project Objective
+```text
+CSV Sources
+     |
+     v
+Databricks Bronze
+     |
+     v
+dbt Silver
+     |
+     v
+dbt Gold
+     |
+     v
+Power BI
+```
 
-The objective of this project is to turn operational supply-chain data
-into an interactive dashboard that helps decision-makers answer
-questions such as:
+## Gold Tables
 
-How are order volumes changing over time?
+### Dimensions
 
-Which suppliers have the highest delivery delays?
+```text
+dim_calendar
+dim_product
+dim_suppliers
+dim_warehouse
+```
 
-What are the major causes of production downtime?
+### Facts
 
-How much is being spent on logistics?
+```text
+fact_inventory
+fact_logistics
+fact_production
+fact_purchase
+fact_sales_forecast
+```
 
-How does forecasted demand compare with historical demand?
+These tables form the analytical foundation for reporting.
 
-Which suppliers or SKUs may require operational attention?
+## Dashboard Areas
 
-How do supply-chain KPIs change when filtering by supplier, SKU, or
-year?
+### Supplier Performance
 
-🗂️ Data Sources
+Supplier analysis focuses on supplier characteristics and purchasing performance.
 
-The project starts with the following CSV datasets in the Bronze
-layer:
+Relevant metrics include:
 
-Dataset                             Description
+- Supplier rating
+- Purchase volume
+- Delivery performance
+- Delivery delays
+- Supplier comparisons
 
-suppliers.csv                     Supplier details, locations, and
-ratings
+### Purchase Orders
 
-purchase_orders.csv               Purchase order dates, quantities,
-promised delivery dates, and actual
-delivery dates
+Purchase-order analysis provides visibility into:
 
-inventory.csv                     SKU-level inventory, warehouse
-information, and reorder levels
+- Order quantities
+- Lead times
+- Delivery delays
+- Supplier performance
+- SKU-level purchasing activity
 
-production.csv                    Production output, downtime hours,
-and downtime reasons
+This area connects with the Machine Learning delivery-risk model.
 
-logistics.csv                     Shipment cost, transport mode, and
-transit delays
+### Inventory
 
-sales_forecast.csv                Historical demand and forecasted
-demand
+Inventory analysis provides SKU and warehouse-level visibility.
 
-Data Architecture
+Questions include:
 
-                SUPPLY CHAIN CSV FILES
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │  BRONZE LAYER   │
-                 │    Raw Data     │
-                 │ Original CSVs   │
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │  SILVER LAYER   │
-                 │ Processed Data  │
-                 │ Cleaned and     │
-                 │ standardized    │
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │   GOLD LAYER    │
-                 │  Joined Tables  │
-                 │ Business-ready  │
-                 │ analytical data │
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │     POWER BI    │
-                 │ Executive       │
-                 │ Dashboard       │
-                 └─────────────────┘
+- Which SKUs have low stock?
+- Which warehouses have inventory pressure?
+- Which products are approaching reorder levels?
+- How is inventory distributed?
 
-Bronze Layer --- Raw Data
+### Production
 
-The Bronze layer contains the original source datasets in their raw
-form. These files represent the operational data collected from
-different supply-chain processes.
+Production analysis focuses on output and downtime.
 
-Silver Layer --- Processed Data
+Relevant information includes:
 
-The Silver layer contains the processed versions of the Bronze datasets.
-Data is cleaned and standardized so that it is suitable for downstream
-analysis and modeling.
+- Production output
+- Downtime hours
+- Downtime reasons
+- Production performance
 
-Gold Layer --- Joined Business Tables
+### Logistics
 
-The Gold layer contains joined and business-ready tables created from
-the processed Silver-layer data. This layer brings related supply-chain
-data together so that Power BI can calculate KPIs and support
-cross-functional analysis.
+Logistics analysis covers:
 
-The Gold layer is therefore the primary analytical layer consumed by the
-Power BI dashboard.
+- Shipment cost
+- Transport mode
+- Transit delays
+- Logistics performance
 
+### Sales Forecasting
 
-📌 Key KPIs
+Forecast analysis compares historical demand with forecasted demand.
 
-The dashboard provides four primary executive KPIs:
+It provides visibility into:
 
-1. Total Logistics Cost
+- Demand trends
+- Forecast performance
+- Demand planning
+- Potential supply-demand gaps
 
-Measures the overall logistics/shipment cost across the selected data.
+## Streamlit Integration
 
-Current overall dashboard value: 1.75M
+The Power BI report is embedded into the Streamlit application through a dedicated dashboard page.
 
-2. Total Downtime Hours
+The current implementation uses:
 
-Measures accumulated production downtime.
+```python
+st.iframe(
+    POWER_BI_URL,
+    height=800
+)
+```
 
-Current overall dashboard value: 2.38K hours
+The report uses a Power BI `reportEmbed` URL.
 
-3. Total Orders
+## Authentication
 
-Shows the number of purchase orders represented in the selected data.
+The current Power BI report uses an authenticated embed configuration.
 
-Current overall dashboard value: 800 orders
+Users may need to sign in and have appropriate access to the Power BI report.
 
-4. Average Delivery Delay Days
+Therefore, the current implementation should not be treated as an anonymous public embed.
 
-Measures the average difference between promised and actual delivery.
+For production customer-facing applications, Power BI Embedded or another appropriate deployment architecture may be required.
 
-Current overall dashboard value: 3.37 days
+## Application Architecture
 
-All KPI values respond dynamically to dashboard filters.
+```text
+                 SUPPLY CHAIN DATA
+                        |
+                        v
+                 Databricks + dbt
+                        |
+                        v
+                    Gold Layer
+                        |
+             +----------+----------+
+             |                     |
+             v                     v
+         Power BI             ML Dataset
+             |                     |
+             v                     v
+       Streamlit App        Random Forest
+                                   |
+                                   v
+                            Supplier Risk
+                                   |
+                                   v
+                              Gemini AI
+```
 
-📈 Dashboard Visuals
+This combines:
 
-Total Orders by Year
+- Descriptive analytics
+- Diagnostic analysis
+- Predictive analytics
+- Natural-language analytics
 
-A yearly trend showing how the number of orders changes over time.
+## Business Value
 
-Observed values in the overall dashboard:
+The Power BI dashboard provides:
 
-Year   Orders
+- Centralized supply chain visibility
+- Supplier performance monitoring
+- Inventory visibility
+- Production monitoring
+- Logistics analysis
+- Forecast analysis
+- Interactive filtering and exploration
 
-2019      112
-2020      140
-2021      130
-2022      132
-2023      142
-2024      144
+The Machine Learning component extends descriptive reporting by identifying purchase orders with elevated delivery risk.
 
-The dashboard shows an overall upward movement in order volume, with
-2024 having the highest displayed order count.
+## Relationship with Machine Learning
 
-Total Downtime Hours by Downtime Reason
+```text
+Power BI
+    |
+    +-- What happened?
+    +-- Where did it happen?
+    +-- How is performance changing?
 
-This visualization breaks production downtime down by cause.
+Machine Learning
+    |
+    +-- What is likely to happen?
+    +-- Which orders are at risk?
+    +-- Which suppliers require attention?
+```
 
-Downtime Reason       Hours
+Together they support both historical analysis and predictive decision support.
 
-Maintenance             544
-Material Shortage       515
-Labor Issue             479
-None                    420
-Machine Failure         419
+## Repository Organization
 
-Key observation: Maintenance and material shortages are the two
-largest downtime categories in the displayed dataset.
+Recommended structure:
 
-Average Delivery Delay Days by Supplier
-
-The supplier comparison helps identify suppliers with relatively high or
-low delivery delays.
-
-The overall dashboard shows supplier-level average delays ranging
-approximately from 2.89 to 4.33 days.
-
-Examples:
-
-Supplier        Avg. Delivery Delay
-
-Supplier_10               4.33 days
-Supplier_8                3.65 days
-Supplier_2                3.57 days
-Supplier_4                3.43 days
-Supplier_9                3.47 days
-Supplier_5                3.11 days
-Supplier_3                3.02 days
-Supplier_7                2.98 days
-Supplier_1                2.89 days
-
-This enables procurement teams to identify suppliers that may require
-delivery-performance improvement.
-
-Total Forecasted Demand vs Total Historical Demand
-
-The demand visualization compares historical demand with forecasted
-demand by year.
-
-This provides a high-level view of demand evolution and helps identify
-periods where forecasted demand differs from historical demand.
-
-🎛️ Interactive Filters
-
-The dashboard includes slicers for:
-
-SKU
-
-Year
-
-Supplier Name
-
-These filters allow users to move from an organization-wide view to a
-more targeted analysis.
-
-For example, users can select one or more suppliers and immediately
-evaluate:
-
-Order volume
-
-Average delivery delay
-
-Logistics cost
-
-Downtime
-
-Demand trends
-
-🔍 Example Filtered Analysis
-
-The filtered dashboard demonstrates how the report changes dynamically
-based on selections.
-
-For the displayed supplier selection:
-
-Supplier        Avg. Delivery Delay   Total Orders
-
-Supplier_10               3.71 days             17
-Supplier_3                3.06 days             16
-Total                     3.39 days             33
-
-The filtered KPI cards also update to reflect the selected data.
-
-💡 Business Questions Answered
-
-The dashboard is designed around practical supply-chain decision-making:
-
-Supplier Performance
-
-Which suppliers experience the highest delivery delays?
-
-Which suppliers handle the largest number of orders?
-
-Are certain suppliers consistently underperforming?
-
-Procurement
-
-How is order volume changing over time?
-
-Which suppliers contribute significantly to purchasing activity?
-
-Where could supplier performance improvement have the greatest
-impact?
-
-Production
-
-What are the largest sources of downtime?
-
-Is maintenance a major contributor to lost production time?
-
-Are material shortages creating significant operational disruption?
-
-Logistics
-
-What is the total logistics expenditure?
-
-How does logistics cost change with the selected supplier, SKU, or
-year?
-
-Are delivery delays creating potential supply-chain risk?
-
-Demand Planning
-
-How does forecasted demand compare with historical demand?
-
-Are demand levels increasing or decreasing across years?
-
-Which periods may require closer inventory and procurement planning?
-
-🧮 Analytical Measures
-
-Typical business metrics represented in the dashboard include:
-
-Total Logistics Cost
-= SUM(Logistics Shipment Cost)
-
-Total Downtime Hours
-= SUM(Production Downtime Hours)
-
-Total Orders
-= COUNT / COUNTROWS(Purchase Orders)
-
-Average Delivery Delay Days
-= AVERAGE(Actual Delivery Date - Promised Delivery Date)
-
-Historical Demand
-= SUM(Historical Demand)
-
-Forecasted Demand
-= SUM(Forecasted Demand)
-
-The exact implementation can vary depending on the final Gold-layer
-schema and Power BI model.
-
-🛠️ Tools & Technologies
-
-Power BI --- dashboarding, interactive reporting, KPI
-visualization
-
-CSV --- source datasets
-
-Data transformation / modeling --- preparation of analytical
-Gold-layer data
-
-Power BI data model / DAX --- analytical measures and dynamic
-KPIs
-
-📁 Suggested Repository Structure
-
-supply-chain-dashboard/
-│
+```text
+powerbi/
 ├── README.md
-│
-├── data/
-│   ├── bronze/
-│   │   └── <bronze-layer-files>
-│   │
-│   └── silver/
-|   |   └── <silver-layer-files>
-│   |
-│   └── gold/
-│       └── <gold-layer-files>
-├── powerbi/
-│   └── supply_chain_dashboard.pbix
-│
-└── images/
-    ├── dashboard_overview.png
-    └── dashboard_filtered.png
+├── Screenshots/
+│   ├── Executive_Overview.png
+│   ├── Supplier_View.png
+│   └── ...
+└── <Power BI project/report files>
+```
 
-🚀 How to Use
+This repository currently stores dashboard screenshots in `powerbi/Screenshots/`.
+Add the Power BI report file or workspace export to this folder when it is
+available; the report itself is not required to run the Streamlit app because
+the app embeds the configured Power BI report URL.
 
-Open the Power BI .pbix file.
+Screenshots can be referenced from the main GitHub README.
 
-Refresh the data model if the source files have changed.
+## Dashboard Documentation
 
-Use the SKU, Year, and Supplier Name slicers to filter
-the report.
+Recommended dashboard pages to document:
 
-Review the KPI cards for the selected scope.
+```text
+Executive Overview
+Supplier Performance
+Inventory Analysis
+Production Analysis
+Logistics Analysis
+Forecast Analysis
+```
 
-Analyze yearly order trends.
+For each page, document:
 
-Compare downtime reasons.
+- Purpose
+- Main KPIs
+- Important visuals
+- Filters
+- Business questions answered
 
-Evaluate supplier delivery performance.
+## Deployment Considerations
 
-Compare forecasted and historical demand.
+Before publishing:
 
-📊 Executive Takeaways
+1. Confirm the report does not expose confidential data.
+2. Do not publish credentials.
+3. Do not commit API keys.
+4. Verify Power BI sharing and authentication settings.
+5. Test the Streamlit application using the intended viewer account.
+6. If anonymous public access is required, use an appropriate Power BI publishing/deployment method rather than relying on an authenticated embed URL.
 
-Based on the overall dashboard view:
+## Future Improvements
 
-800 orders are represented in the displayed dataset.
+- Executive KPI page
+- Supplier drill-through
+- Warehouse drill-through
+- Product-level analysis
+- Dynamic KPI cards
+- Advanced DAX measures
+- Conditional formatting
+- Forecast accuracy metrics
+- Supplier risk integration
+- ML prediction overlays
+- Automated refresh
+- Row-level security
 
-Total logistics cost is approximately 1.75M.
+## Summary
 
-Total production downtime is approximately 2.38K hours.
+Power BI provides the interactive business intelligence layer of the project.
 
-Average delivery delay is approximately 3.37 days.
+## Local Validation Checklist
 
-Maintenance is the largest displayed downtime category at 544
-hours.
+Before publishing the report or sharing the app:
 
-Material Shortage is the second-largest downtime category at
-515 hours.
+1. Confirm the report URL opens for the intended viewer account.
+2. Confirm all Gold-layer tables refresh successfully.
+3. Check that slicers and drill-through pages return data.
+4. Verify that screenshots do not expose confidential information.
 
-Supplier_10 has the highest displayed average delivery delay at
-4.33 days.
+The overall platform connects:
 
-Supplier_1 has the lowest displayed average delivery delay at
-2.89 days.
+```text
+Data Engineering
+       |
+       v
+Business Intelligence
+       |
+       v
+Predictive Analytics
+       |
+       v
+AI-Assisted Analysis
+```
 
-Order volume reaches its highest displayed level in 2024 with 144
-orders.
-
-These metrics can be used as a starting point for deeper root-cause
-analysis and supply-chain optimization.
-
-🔮 Potential Future Enhancements
-
-Possible extensions to the project include:
-
-Supplier risk scoring
-
-Inventory stockout and reorder analysis
-
-OTIF (On-Time In-Full) analysis
-
-Purchase-order lead-time analysis
-
-Logistics cost by transport mode
-
-Forecast accuracy metrics such as MAPE
-
-Supplier rating vs delivery-performance analysis
-
-Inventory turnover analysis
-
-Downtime cost estimation
-
-Automated alerts for high delivery delays or low inventory
-
-Drill-through pages for SKU and supplier-level investigation
-
-👤 Project
-
-Supply Chain Analytics & Executive Dashboard
-
-Built to demonstrate end-to-end supply-chain data analysis, business KPI
-development, data modeling, and executive reporting using Power BI.
+This creates an end-to-end supply chain analytics experience.
