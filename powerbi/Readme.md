@@ -223,7 +223,7 @@ Recommended structure:
 
 ```text
 powerbi/
-├── README.md
+├── Readme.md
 ├── Screenshots/
 │   ├── Executive_Overview.png
 │   ├── Supplier_View.png

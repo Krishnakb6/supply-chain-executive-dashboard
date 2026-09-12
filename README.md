@@ -2,6 +2,13 @@
 
 An end-to-end supply chain analytics project combining Databricks, dbt, Medallion Architecture, Power BI, Machine Learning, Streamlit, and a Gemini-powered AI assistant.
 
+## Live Demo
+
+[Open the deployed Streamlit application](https://supply-chain-executive-dashboardgit-5hkwf72ebxr2pgphedbjad.streamlit.app/)
+
+The deployed app may require Streamlit authentication. The Gemini AI Assistant
+also requires `GEMINI_API_KEY` to be configured in the deployment secrets.
+
 ## Overview
 
 The platform transforms raw operational data into analytical datasets, interactive business dashboards, supplier delivery-risk predictions, and a natural-language analytics interface.
@@ -114,7 +121,7 @@ Power BI provides the business-facing analytics layer covering:
 
 The report is embedded in the Streamlit application.
 
-See `powerbi/Readme.md` for Power BI documentation.
+See [powerbi/Readme.md](powerbi/Readme.md) for Power BI documentation.
 
 ## Machine Learning
 
@@ -172,7 +179,7 @@ The late class is the primary business focus, making recall and F1 particularly 
 
 These are business-defined thresholds, not learned model thresholds.
 
-See `ml/Readme.md` for the complete ML documentation.
+See [ml/Readme.md](ml/Readme.md) for the complete ML documentation.
 
 The reproducible notebook is `ml/supplier_delay_prediction_fixed.ipynb`. It
 reads `ml/ml_purchase_order_features.csv` and writes the prediction output to
@@ -233,15 +240,22 @@ Supply_Chain_Project/
 │       └── secrets.toml
 │
 ├── ml/
-│   ├── README.md
+│   ├── Readme.md
 │   ├── supplier_delay_prediction_fixed.ipynb
 │   ├── ml_purchase_order_features.csv
 │   └── supplier_delay_predictions.csv
 │
 ├── powerbi/
-│   └── README.md
+│   ├── Readme.md
+│   └── Screenshots/
 │
-├── models/
+├── Supply_Chain_Project/
+│   ├── dbt_project.yml
+│   ├── profiles.yml
+│   └── models/
+│
+├── src/
+│   └── supply_chain_project/
 │
 ├── README.md
 └── .gitignore

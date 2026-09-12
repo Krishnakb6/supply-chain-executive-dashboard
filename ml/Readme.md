@@ -2,6 +2,10 @@
 
 This module extends the Supply Chain & Manufacturing Analytics Platform with a Machine Learning model that predicts whether a purchase order is likely to be delivered late.
 
+The current workflow is in `supplier_delay_prediction_fixed.ipynb`. It reads
+the feature dataset in this folder and writes matching prediction files to
+both the `ml/` and `app/` folders.
+
 ## Objective
 
 The problem is formulated as binary classification:
